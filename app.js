@@ -116,13 +116,18 @@ function updateDisplay(ms) {
 }
 
 /* Interval sequence */
-let intervals = []; // {type: 'work'|'rest', label, ms}
+let intervals = [
+  {type:'work', label:'Oefening', ms: 10*60000},
+  {type:'rest', label:'Rust', ms: 5*60000},
+  {type:'work', label:'Volgende oefening', ms: 10*60000}
+]; // {type:'work'|'rest', label, ms}
 let currentIndex = 0;
 let running = false;
 let endTimeMs = 0;
 let totalMsOfCurrent = 0;
 let rafId = null;
 
+/* Editor (modal) */
 function rebuildList() {
   listEl.innerHTML = '';
   intervals.forEach((it, i) => addRow(it, i));
@@ -243,9 +248,9 @@ btnDemo.addEventListener('click', () => {
 });
 btnClear.addEventListener('click', () => { intervals = []; rebuildList(); reset(); });
 
-btnSave.addEventListener('click', () => { localStorage.setItem('intervals-modal-v2', JSON.stringify(intervals)); alert('Schema opgeslagen.'); });
+btnSave.addEventListener('click', () => { localStorage.setItem('intervals-modal-v3', JSON.stringify(intervals)); alert('Schema opgeslagen.'); });
 btnLoad.addEventListener('click', () => {
-  const raw = localStorage.getItem('intervals-modal-v2');
+  const raw = localStorage.getItem('intervals-modal-v3');
   if (!raw) return alert('Geen schema gevonden.');
   try { intervals = JSON.parse(raw) || []; } catch(e){ intervals = []; }
   rebuildList(); currentIndex = 0; updateDisplay(intervals[0]?.ms || 0); updateMeta();
@@ -254,15 +259,10 @@ btnLoad.addEventListener('click', () => {
 /* Modal open/close */
 function openModal(){ modal.hidden = false; modalBackdrop.hidden = false; }
 function closeModal(){ modal.hidden = true; modalBackdrop.hidden = true; }
-document.getElementById('btn-settings').addEventListener('click', openModal);
-document.getElementById('btn-close').addEventListener('click', closeModal);
+btnSettings.addEventListener('click', openModal);
+btnClose.addEventListener('click', closeModal);
 modalBackdrop.addEventListener('click', closeModal);
 document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && !modal.hidden) closeModal(); });
 
 /* Init */
-let intervals = [
-  {type:'work', label:'Oefening', ms: 10*60000},
-  {type:'rest', label:'Rust', ms: 5*60000},
-  {type:'work', label:'Volgende oefening', ms: 10*60000}
-];
 rebuildList(); currentIndex = 0; updateDisplay(intervals[0].ms); updateMeta();
