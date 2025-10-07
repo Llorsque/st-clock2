@@ -1,8 +1,9 @@
-# Training Interval Timer — v4
+# Trias Training Timer (v7)
 
-Wijzigingen t.o.v. v3:
-- **“Oefening”-badge verwijderd** in de hoofdweergave → alleen je **titel** blijft zichtbaar en die is **aanzienlijk groter**.
-- Bij **+ Oefening** en **+ Rust** staan de **standaardtijden op 0:00**.
-- Start met een **leeg schema** (klik ⚙️ om items toe te voegen).
+- **Gelijke rechthoek-segmenten** (geen overlap) → strakke cijfers, incl. **5** zoals je voorbeeld.
+- **mm:ss** countdown, gigantisch in 16:9.
+- **Types**: Oefening (rood), Rust (rood), **Overgang (lichtblauw)** — kleur wisselt automatisch.
+- **Instellingen** via ⚙️ (modal): items toevoegen/bewerken, **0:00** standaard, demo, opslaan/laden.
+- Titel/branding: **Trias Training Timer** — *powered by Llorsque*.
 
-Overig: 16:9 layout, auto-advance, opslaan/laden, demo-schema, mm:ss LED-digits.
+Open `index.html` om te starten.

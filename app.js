@@ -1,4 +1,4 @@
-// Interval Training Timer — v4 (mm:ss, bigger title, clean display, modal editor)
+// Trias Training Timer — v7
 const screen = document.getElementById('screen');
 const btnStart = document.getElementById('btn-start');
 const btnPause = document.getElementById('btn-pause');
@@ -27,7 +27,7 @@ const btnSave = document.getElementById('btn-save');
 const btnLoad = document.getElementById('btn-load');
 const toggleSound = document.getElementById('toggle-sound');
 
-/* 7-seg rectangular digits (4 digits + colon) */
+/* 7-seg digits mapping */
 const SEGMENTS = {
   '0': [1,1,1,1,1,1,0],
   '1': [0,1,1,0,0,0,0],
@@ -41,31 +41,45 @@ const SEGMENTS = {
   '9': [1,1,1,1,0,1,1],
 };
 
+/* Equal rectangular segments — no overlaps */
 function createDigit() {
   const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
-  svg.setAttribute('viewBox','0 0 140 220');
+  svg.setAttribute('viewBox','0 0 160 260');
   svg.classList.add('digit');
 
-  const t = 34, o = 14;
-  const W = 140 - 2*o, H = 220 - 2*o, mid = o + H/2;
+  const o = 8;
+  const t = 36;
+  const W = 160 - 2*o;
+  const H = 260 - 2*o;
 
-  function rrect(x,y,w,h){
+  const innerW = W - 2*t;
+  const topY = o;
+  const vertH = (H - 3*t)/2;
+  const midY = o + t + vertH;
+  const botY = o + H - t;
+  const leftX = o;
+  const rightX = o + W - t;
+  const horizX = o + t;
+
+  function rr(x,y,w,h){
     const r = document.createElementNS('http://www.w3.org/2000/svg','rect');
-    r.setAttribute('x', x); r.setAttribute('y', y);
-    r.setAttribute('width', w); r.setAttribute('height', h);
+    r.setAttribute('x', Math.round(x));
+    r.setAttribute('y', Math.round(y));
+    r.setAttribute('width', Math.round(w));
+    r.setAttribute('height', Math.round(h));
     r.classList.add('segment');
     svg.appendChild(r);
     return r;
   }
 
   const segs = {
-    a: rrect(o, o, W, t),
-    g: rrect(o, mid - t/2, W, t),
-    d: rrect(o, o+H - t, W, t),
-    f: rrect(o, o, t, H/2),
-    e: rrect(o, mid, t, H/2),
-    b: rrect(o+W - t, o, t, H/2),
-    c: rrect(o+W - t, mid, t, H/2),
+    a: rr(horizX, topY, innerW, t),
+    g: rr(horizX, midY, innerW, t),
+    d: rr(horizX, botY, innerW, t),
+    f: rr(leftX,  topY + t, t, vertH),
+    e: rr(leftX,  midY + t, t, vertH),
+    b: rr(rightX, topY + t, t, vertH),
+    c: rr(rightX, midY + t, t, vertH),
   };
 
   svg._segments = segs;
@@ -115,20 +129,18 @@ function updateDisplay(ms) {
   renderTwoDigits(s, digits[2], digits[3]);
 }
 
-
-function applyMode(type){
-  document.body.classList.toggle('transition-mode', type === 'transition');
-}
-
 /* Interval sequence */
-let intervals = []; // start empty
+let intervals = []; // empty by default
 let currentIndex = 0;
 let running = false;
 let endTimeMs = 0;
 let totalMsOfCurrent = 0;
 let rafId = null;
 
-/* Editor (modal) */
+function applyMode(type){
+  document.body.classList.toggle('transition-mode', type === 'transition');
+}
+
 function rebuildList() {
   listEl.innerHTML = '';
   intervals.forEach((it, i) => addRow(it, i));
@@ -143,7 +155,7 @@ function addRow(it, idx) {
   typeSel.innerHTML = `<option value="work">Oefening</option><option value="rest">Rust</option><option value="transition">Overgang</option>`;
   typeSel.value = it.type;
 
-  const label = document.createElement('input'); label.type = 'text'; label.value = it.label || (it.type === 'work' ? 'Oefening' : 'Rust');
+  const label = document.createElement('input'); label.type = 'text'; label.value = it.label || (it.type === 'work' ? 'Oefening' : it.type==='transition'?'Overgang':'Rust');
   const min = document.createElement('input'); min.type = 'number'; min.min = 0; min.step = 1; min.value = Math.floor(it.ms/60000);
   const sec = document.createElement('input'); sec.type = 'number'; sec.min = 0; sec.max = 59; sec.step = 1; sec.value = Math.floor(it.ms/1000)%60;
   const del = document.createElement('button'); del.className='iconbtn'; del.textContent='✕';
@@ -173,8 +185,8 @@ function refreshTotals() {
 
 function updateMeta() {
   const cur = intervals[currentIndex];
-  if (cur) applyMode(cur.type);
   nowLabelEl.textContent = cur?.label || '—';
+  applyMode(cur?.type || 'work');
   const nxt = intervals[currentIndex+1] || (toggleLoop.checked ? intervals[0] : null);
   nextLabelEl.textContent = nxt ? `${nxt.label}` : '—';
 }
@@ -184,7 +196,6 @@ function playFrom(index) {
   if (!intervals.length) return;
   currentIndex = index;
   const cur = intervals[currentIndex];
-  if (cur) applyMode(cur.type);
   if (!cur) return;
   applyMode(cur.type);
   totalMsOfCurrent = cur.ms;
@@ -225,7 +236,7 @@ function reset() {
   running = false; btnStart.disabled = false;
   if (rafId) cancelAnimationFrame(rafId); rafId = null;
   rebuildList(); currentIndex = 0;
-  updateDisplay(intervals[0]?.ms || 0); progressEl.style.width = '0%'; updateMeta(); if(!intervals.length) applyMode('work');
+  updateDisplay(intervals[0]?.ms || 0); progressEl.style.width = '0%'; updateMeta();
 }
 
 /* Events */
@@ -241,21 +252,22 @@ btnAddTransition.addEventListener('click', () => { intervals.push({type:'transit
 btnDemo.addEventListener('click', () => {
   intervals = [
     {type:'work', label:'Warming-up', ms: 2*60000},
-    {type:'rest', label:'Rust', ms: 30*1000},
+    {type:'transition', label:'Overgang', ms: 15000},
+    {type:'rest', label:'Rust', ms: 30000},
     {type:'work', label:'Oefening 1', ms: 3*60000},
-    {type:'transition', label:'Overgang', ms: 15*1000},
-    {type:'rest', label:'Rust', ms: 60*1000},
+    {type:'transition', label:'Overgang', ms: 15000},
+    {type:'rest', label:'Rust', ms: 60000},
     {type:'work', label:'Oefening 2', ms: 3*60000},
-    {type:'rest', label:'Rust', ms: 60*1000},
+    {type:'rest', label:'Rust', ms: 60000},
     {type:'work', label:'Cooling-down', ms: 2*60000},
   ];
   rebuildList(); currentIndex = 0; updateDisplay(intervals[0].ms); updateMeta();
 });
 btnClear.addEventListener('click', () => { intervals = []; rebuildList(); reset(); });
 
-btnSave.addEventListener('click', () => { localStorage.setItem('intervals-modal-v4', JSON.stringify(intervals)); alert('Schema opgeslagen.'); });
+btnSave.addEventListener('click', () => { localStorage.setItem('trias-intervals-v7', JSON.stringify(intervals)); alert('Schema opgeslagen.'); });
 btnLoad.addEventListener('click', () => {
-  const raw = localStorage.getItem('intervals-modal-v4');
+  const raw = localStorage.getItem('trias-intervals-v7');
   if (!raw) return alert('Geen schema gevonden.');
   try { intervals = JSON.parse(raw) || []; } catch(e){ intervals = []; }
   rebuildList(); currentIndex = 0; updateDisplay(intervals[0]?.ms || 0); updateMeta();
