@@ -1,4 +1,4 @@
-// Interval Training Timer — mm:ss, settings modal, titles above timer
+// Interval Training Timer — v4 (mm:ss, bigger title, clean display, modal editor)
 const screen = document.getElementById('screen');
 const btnStart = document.getElementById('btn-start');
 const btnPause = document.getElementById('btn-pause');
@@ -8,7 +8,6 @@ const btnNext = document.getElementById('btn-next');
 const toggleLoop = document.getElementById('toggle-loop');
 const progressEl = document.getElementById('progress');
 
-const nowTypeEl = document.getElementById('now-type');
 const nowLabelEl = document.getElementById('now-label');
 const nextLabelEl = document.getElementById('next-label');
 
@@ -116,11 +115,7 @@ function updateDisplay(ms) {
 }
 
 /* Interval sequence */
-let intervals = [
-  {type:'work', label:'Oefening', ms: 10*60000},
-  {type:'rest', label:'Rust', ms: 5*60000},
-  {type:'work', label:'Volgende oefening', ms: 10*60000}
-]; // {type:'work'|'rest', label, ms}
+let intervals = []; // start empty
 let currentIndex = 0;
 let running = false;
 let endTimeMs = 0;
@@ -172,10 +167,9 @@ function refreshTotals() {
 
 function updateMeta() {
   const cur = intervals[currentIndex];
-  nowTypeEl.textContent = cur ? (cur.type==='work'?'Oefening':'Rust') : '—';
   nowLabelEl.textContent = cur?.label || '—';
   const nxt = intervals[currentIndex+1] || (toggleLoop.checked ? intervals[0] : null);
-  nextLabelEl.textContent = nxt ? `${nxt.type==='work'?'Oefening':'Rust'} — ${nxt.label}` : '—';
+  nextLabelEl.textContent = nxt ? `${nxt.label}` : '—';
 }
 
 /* Playback */
@@ -232,8 +226,8 @@ btnReset.addEventListener('click', reset);
 btnNext.addEventListener('click', () => advance());
 btnPrev.addEventListener('click', () => { if (!intervals.length) return; currentIndex = Math.max(0, currentIndex - 1); playFrom(currentIndex); });
 
-btnAddWork.addEventListener('click', () => { intervals.push({type:'work', label:'Nieuwe oefening', ms: 10*60000}); rebuildList(); });
-btnAddRest.addEventListener('click', () => { intervals.push({type:'rest', label:'Rust', ms: 5*60000}); rebuildList(); });
+btnAddWork.addEventListener('click', () => { intervals.push({type:'work', label:'Nieuwe oefening', ms: 0}); rebuildList(); });
+btnAddRest.addEventListener('click', () => { intervals.push({type:'rest', label:'Rust', ms: 0}); rebuildList(); });
 btnDemo.addEventListener('click', () => {
   intervals = [
     {type:'work', label:'Warming-up', ms: 2*60000},
@@ -248,9 +242,9 @@ btnDemo.addEventListener('click', () => {
 });
 btnClear.addEventListener('click', () => { intervals = []; rebuildList(); reset(); });
 
-btnSave.addEventListener('click', () => { localStorage.setItem('intervals-modal-v3', JSON.stringify(intervals)); alert('Schema opgeslagen.'); });
+btnSave.addEventListener('click', () => { localStorage.setItem('intervals-modal-v4', JSON.stringify(intervals)); alert('Schema opgeslagen.'); });
 btnLoad.addEventListener('click', () => {
-  const raw = localStorage.getItem('intervals-modal-v3');
+  const raw = localStorage.getItem('intervals-modal-v4');
   if (!raw) return alert('Geen schema gevonden.');
   try { intervals = JSON.parse(raw) || []; } catch(e){ intervals = []; }
   rebuildList(); currentIndex = 0; updateDisplay(intervals[0]?.ms || 0); updateMeta();
@@ -265,4 +259,4 @@ modalBackdrop.addEventListener('click', closeModal);
 document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && !modal.hidden) closeModal(); });
 
 /* Init */
-rebuildList(); currentIndex = 0; updateDisplay(intervals[0].ms); updateMeta();
+rebuildList(); currentIndex = 0; updateDisplay(0); updateMeta();
