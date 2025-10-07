@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Training Interval Timer — 16:9</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="stage">
+    <main class="shell" role="application">
+      <section class="display panel" aria-live="polite">
+        <div id="screen" class="screen" aria-label="Hoofd timer">
+          <!-- digits injected by app.js -->
+        </div>
+        <div class="now-meta">
+          <div class="now-line">
+            <span class="pill now-type" id="now-type">Oefening</span>
+            <span class="now-label" id="now-label">—</span>
+          </div>
+          <div class="progress-wrap" aria-label="Vooruitgang">
+            <div id="progress" class="progress"></div>
+          </div>
+          <div class="next-line">
+            <span class="muted">Hierna:</span> <span id="next-label">—</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel controls">
+        <div class="group cta">
+          <button id="btn-start" class="btn primary">Start</button>
+          <button id="btn-pause" class="btn">Pauze</button>
+          <button id="btn-reset" class="btn ghost">Reset</button>
+          <button id="btn-prev" class="btn ghost">Vorige</button>
+          <button id="btn-next" class="btn ghost">Volgende</button>
+          <label class="switch">
+            <input id="toggle-sound" type="checkbox" checked />
+            <span>Geluid</span>
+          </label>
+          <label class="switch">
+            <input id="toggle-loop" type="checkbox" />
+            <span>Herhalen</span>
+          </label>
+        </div>
+      </section>
+
+      <section class="panel editor">
+        <header class="bar">
+          <h2 class="brand">Schema</h2>
+          <div class="group">
+            <button id="btn-add-work" class="btn small">+ Oefening</button>
+            <button id="btn-add-rest" class="btn small">+ Rust</button>
+            <button id="btn-clear" class="btn small ghost">Leeg</button>
+            <button id="btn-demo" class="btn small ghost">Demo</button>
+            <button id="btn-save" class="btn small primary">Opslaan</button>
+            <button id="btn-load" class="btn small">Laden</button>
+          </div>
+        </header>
+        <ul id="list" class="list" aria-label="Interval lijst">
+          <!-- rows injected by app.js -->
+        </ul>
+        <footer class="foot">
+          <div><strong>Totaal:</strong> <span id="total-time">00:00</span></div>
+          <div class="muted">Tip: dubbelklik op tijdveld voor snel aanpassen met pijltjes ↑/↓</div>
+        </footer>
+      </section>
+    </main>
+  </div>
+
+  <audio id="beep" preload="auto">
+    <source src="beep.mp3" type="audio/mpeg" />
+  </audio>
+  <script src="app.js"></script>
+</body>
+</html>
