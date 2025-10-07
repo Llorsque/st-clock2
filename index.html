@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Training Interval Timer — 16:9</title>
+  <title>Trias Training Timer — 16:9</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&display=swap" rel="stylesheet">
@@ -13,7 +13,10 @@
   <div class="stage">
     <main class="shell" role="application">
       <header class="topbar">
-        <h1 class="app-title">Training Timer</h1>
+        <div class="brand">
+  <h1 class="app-title">Trias Training Timer</h1>
+  <div class="app-sub">powered by Llorsque</div>
+</div>
         <div class="top-actions">
           <label class="switch small"><input id="toggle-loop" type="checkbox"><span>Herhalen</span></label>
           <button id="btn-settings" class="iconbtn gear" aria-label="Instellingen" title="Instellingen">⚙️</button>
@@ -56,6 +59,7 @@
         <div class="group">
           <button id="btn-add-work" class="btn small">+ Oefening</button>
           <button id="btn-add-rest" class="btn small">+ Rust</button>
+          <button id="btn-add-transition" class="btn small">+ Overgang</button>
           <button id="btn-demo" class="btn small ghost">Demo</button>
           <button id="btn-clear" class="btn small ghost">Leeg</button>
         </div>

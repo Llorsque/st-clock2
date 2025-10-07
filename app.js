@@ -20,6 +20,7 @@ const listEl = document.getElementById('list');
 const totalTimeEl = document.getElementById('total-time');
 const btnAddWork = document.getElementById('btn-add-work');
 const btnAddRest = document.getElementById('btn-add-rest');
+const btnAddTransition = document.getElementById('btn-add-transition');
 const btnDemo = document.getElementById('btn-demo');
 const btnClear = document.getElementById('btn-clear');
 const btnSave = document.getElementById('btn-save');
@@ -114,6 +115,11 @@ function updateDisplay(ms) {
   renderTwoDigits(s, digits[2], digits[3]);
 }
 
+
+function applyMode(type){
+  document.body.classList.toggle('transition-mode', type === 'transition');
+}
+
 /* Interval sequence */
 let intervals = []; // start empty
 let currentIndex = 0;
@@ -134,7 +140,7 @@ function addRow(it, idx) {
 
   const typeSel = document.createElement('select');
   typeSel.className = 'type-select';
-  typeSel.innerHTML = `<option value="work">Oefening</option><option value="rest">Rust</option>`;
+  typeSel.innerHTML = `<option value="work">Oefening</option><option value="rest">Rust</option><option value="transition">Overgang</option>`;
   typeSel.value = it.type;
 
   const label = document.createElement('input'); label.type = 'text'; label.value = it.label || (it.type === 'work' ? 'Oefening' : 'Rust');
@@ -167,6 +173,7 @@ function refreshTotals() {
 
 function updateMeta() {
   const cur = intervals[currentIndex];
+  if (cur) applyMode(cur.type);
   nowLabelEl.textContent = cur?.label || '—';
   const nxt = intervals[currentIndex+1] || (toggleLoop.checked ? intervals[0] : null);
   nextLabelEl.textContent = nxt ? `${nxt.label}` : '—';
@@ -177,7 +184,9 @@ function playFrom(index) {
   if (!intervals.length) return;
   currentIndex = index;
   const cur = intervals[currentIndex];
+  if (cur) applyMode(cur.type);
   if (!cur) return;
+  applyMode(cur.type);
   totalMsOfCurrent = cur.ms;
   endTimeMs = performance.now() + cur.ms;
   running = true;
@@ -216,7 +225,7 @@ function reset() {
   running = false; btnStart.disabled = false;
   if (rafId) cancelAnimationFrame(rafId); rafId = null;
   rebuildList(); currentIndex = 0;
-  updateDisplay(intervals[0]?.ms || 0); progressEl.style.width = '0%'; updateMeta();
+  updateDisplay(intervals[0]?.ms || 0); progressEl.style.width = '0%'; updateMeta(); if(!intervals.length) applyMode('work');
 }
 
 /* Events */
@@ -228,11 +237,13 @@ btnPrev.addEventListener('click', () => { if (!intervals.length) return; current
 
 btnAddWork.addEventListener('click', () => { intervals.push({type:'work', label:'Nieuwe oefening', ms: 0}); rebuildList(); });
 btnAddRest.addEventListener('click', () => { intervals.push({type:'rest', label:'Rust', ms: 0}); rebuildList(); });
+btnAddTransition.addEventListener('click', () => { intervals.push({type:'transition', label:'Overgang', ms: 0}); rebuildList(); });
 btnDemo.addEventListener('click', () => {
   intervals = [
     {type:'work', label:'Warming-up', ms: 2*60000},
     {type:'rest', label:'Rust', ms: 30*1000},
     {type:'work', label:'Oefening 1', ms: 3*60000},
+    {type:'transition', label:'Overgang', ms: 15*1000},
     {type:'rest', label:'Rust', ms: 60*1000},
     {type:'work', label:'Oefening 2', ms: 3*60000},
     {type:'rest', label:'Rust', ms: 60*1000},

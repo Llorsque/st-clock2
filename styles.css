@@ -108,3 +108,9 @@ body{ margin:0; font-family:'Archivo', system-ui, -apple-system, Segoe UI, Robot
 .row input[type="number"]{ width:100%; padding:10px 10px; background:#0a0a0a; border:1px solid #1a1a1a; border-radius:10px; color:#e8e8e8; font-weight:700; }
 .row .iconbtn{ background:#0f0f0f; border:1px solid #202020; border-radius:8px; height:36px; width:36px; cursor:pointer; }
 .row .iconbtn:hover{ filter:brightness(1.15); }
+
+.brand{ display:flex; flex-direction:column; line-height:1.0; }
+.app-sub{ margin-top:4px; font-size:12px; color:#9aa0ad; letter-spacing:.06em; text-transform:lowercase; }
+
+:root{ --accent-blue:#89d8ff; }
+body.transition-mode .segment.lit{ fill: var(--accent-blue); }
