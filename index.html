@@ -12,21 +12,27 @@
 <body>
   <div class="stage">
     <main class="shell" role="application">
-      <section class="display panel" aria-live="polite">
-        <div id="screen" class="screen" aria-label="Hoofd timer">
-          <!-- digits injected by app.js -->
+      <header class="topbar">
+        <h1 class="app-title">Training Timer</h1>
+        <div class="top-actions">
+          <label class="switch small"><input id="toggle-loop" type="checkbox"><span>Herhalen</span></label>
+          <button id="btn-settings" class="iconbtn gear" aria-label="Instellingen" title="Instellingen">⚙️</button>
         </div>
+      </header>
+
+      <section class="display panel" aria-live="polite">
         <div class="now-meta">
           <div class="now-line">
             <span class="pill now-type" id="now-type">Oefening</span>
             <span class="now-label" id="now-label">—</span>
           </div>
-          <div class="progress-wrap" aria-label="Vooruitgang">
-            <div id="progress" class="progress"></div>
-          </div>
-          <div class="next-line">
-            <span class="muted">Hierna:</span> <span id="next-label">—</span>
-          </div>
+        </div>
+        <div id="screen" class="screen" aria-label="Hoofd timer"></div>
+        <div class="progress-wrap" aria-label="Vooruitgang">
+          <div id="progress" class="progress"></div>
+        </div>
+        <div class="next-line">
+          <span class="muted">Hierna:</span> <span id="next-label">—</span>
         </div>
       </section>
 
@@ -37,43 +43,36 @@
           <button id="btn-reset" class="btn ghost">Reset</button>
           <button id="btn-prev" class="btn ghost">Vorige</button>
           <button id="btn-next" class="btn ghost">Volgende</button>
-          <label class="switch">
-            <input id="toggle-sound" type="checkbox" checked />
-            <span>Geluid</span>
-          </label>
-          <label class="switch">
-            <input id="toggle-loop" type="checkbox" />
-            <span>Herhalen</span>
-          </label>
         </div>
-      </section>
-
-      <section class="panel editor">
-        <header class="bar">
-          <h2 class="brand">Schema</h2>
-          <div class="group">
-            <button id="btn-add-work" class="btn small">+ Oefening</button>
-            <button id="btn-add-rest" class="btn small">+ Rust</button>
-            <button id="btn-clear" class="btn small ghost">Leeg</button>
-            <button id="btn-demo" class="btn small ghost">Demo</button>
-            <button id="btn-save" class="btn small primary">Opslaan</button>
-            <button id="btn-load" class="btn small">Laden</button>
-          </div>
-        </header>
-        <ul id="list" class="list" aria-label="Interval lijst">
-          <!-- rows injected by app.js -->
-        </ul>
-        <footer class="foot">
-          <div><strong>Totaal:</strong> <span id="total-time">00:00</span></div>
-          <div class="muted">Tip: dubbelklik op tijdveld voor snel aanpassen met pijltjes ↑/↓</div>
-        </footer>
       </section>
     </main>
   </div>
 
-  <audio id="beep" preload="auto">
-    <source src="beep.mp3" type="audio/mpeg" />
-  </audio>
+  <!-- Modal: Settings / Schema editor -->
+  <div id="modal-backdrop" class="modal-backdrop" hidden></div>
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="modal-card">
+      <header class="modal-head">
+        <h2 id="modal-title">Instellingen & Schema</h2>
+        <div class="group">
+          <button id="btn-add-work" class="btn small">+ Oefening</button>
+          <button id="btn-add-rest" class="btn small">+ Rust</button>
+          <button id="btn-demo" class="btn small ghost">Demo</button>
+          <button id="btn-clear" class="btn small ghost">Leeg</button>
+        </div>
+      </header>
+      <ul id="list" class="list" aria-label="Interval lijst"></ul>
+      <footer class="modal-foot">
+        <div><strong>Totaal:</strong> <span id="total-time">00:00</span></div>
+        <div class="grow"></div>
+        <label class="switch"><input id="toggle-sound" type="checkbox" checked><span>Geluid</span></label>
+        <button id="btn-save" class="btn small primary">Opslaan</button>
+        <button id="btn-load" class="btn small">Laden</button>
+        <button id="btn-close" class="btn">Sluiten</button>
+      </footer>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>

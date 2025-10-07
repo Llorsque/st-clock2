@@ -1,20 +1,14 @@
-# Training Interval Timer (Gymboss-stijl, 16:9)
+# Training Interval Timer — modal editor, titels boven timer, **mm:ss** (zonder honderdsten)
 
-Bouw blokken (oefeningen + rust) en laat ze **automatisch** achter elkaar afspelen.
+**Wat is nieuw**
+- **Honderdsten verwijderd** → duidelijke **mm:ss** weergave.
+- **Instellingen-wieltje** (⚙️) opent een **pop-up** met je **schema-editor** (oefening/rust + tijden, opslaan/laden).
+- **Titels** van de huidige oefening of rust staan **boven de countdown** (en “Hierna:” eronder).
+- Strakke 16:9 layout, grote rode rechthoekige digits.
 
-## Features
-- **Volgorde van timers**: elke oefening of rust heeft label + duur (min/seconden/honderdsten).
-- **Auto-advance**: na afloop start de volgende timer vanzelf.
-- **Grote countdown** in mm:ss:hh (rode, rechthoekige zeven-segment cijfers).
-- **Vooruitgangsbalk** en **“Hierna”** preview.
-- **Start/Pauze/Reset**, **Vorige/Volgende**, **Herhalen** (loop) en optioneel **geluid**.
-- **Schema-editor**: voeg Work/Rust toe, bewerk tijden, verplaats ↑/↓, verwijder.
-- **Totaaltijd** en **Opslaan/Laden** (localStorage).
-- **16:9** schaal, werkt fullscreen zonder externe libraries.
-
-## Snelstart
-1. Open `index.html` in de browser.
-2. Klik op **Demo** om een voorbeeldschema te laden.
-3. **Start** om te beginnen; de volgende blokken starten automatisch.
+**Gebruik**
+1. Open `index.html`.
+2. ⚙️ **Instellingen** → stel je training samen.
+3. **Start** → volgende blokken starten automatisch.
 
 MIT-licentie.
